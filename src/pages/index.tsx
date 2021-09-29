@@ -25,7 +25,7 @@ export default function Home(): JSX.Element {
   async function fetchImagesPage({
     pageParam = null,
   }): Promise<FetchImagesPageResponse> {
-    const { data } = await api.get('/api/images', {
+    const { data } = await api('/api/images', {
       params: {
         after: pageParam,
       },
@@ -46,9 +46,10 @@ export default function Home(): JSX.Element {
   });
 
   const formattedData = useMemo(() => {
-    return data?.pages.flatMap(image => {
-      return image.data.flat();
+    const formatted = data?.pages.flatMap(imageData => {
+      return imageData.data.flat();
     });
+    return formatted;
   }, [data]);
 
   if (isLoading && !isError) {
@@ -69,6 +70,7 @@ export default function Home(): JSX.Element {
         {hasNextPage && (
           <Button
             isLoading={isFetchingNextPage}
+            disabled={isFetchingNextPage}
             onClick={() => fetchNextPage()}
           >
             {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
